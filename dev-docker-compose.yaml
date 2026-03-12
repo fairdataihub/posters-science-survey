@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: nuxt_starter_local
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql # postgres 18 data directory
+
+volumes:
+  postgres_data:

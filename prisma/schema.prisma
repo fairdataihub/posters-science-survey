@@ -1,0 +1,51 @@
+generator client {
+    provider        = "prisma-client"
+    previewFeatures = ["strictUndefinedChecks"]
+    output          = "../shared/generated/"
+    engineType      = "client"
+}
+
+generator kysely {
+    provider = "prisma-kysely"
+
+    output   = "../shared/generated/"
+    fileName = "kysely.ts"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id String @id @default(cuid())
+
+    givenName  String @default("") // first name
+    familyName String @default("") // last name
+
+    emailAddress String @unique
+    password     String
+
+    emailVerified                 Boolean   @default(false)
+    emailVerifiedAt               DateTime?
+    emailVerificationToken        String?   @unique
+    emailVerificationTokenExpires DateTime?
+
+    created DateTime @default(now())
+    updated DateTime @updatedAt
+
+    things Thing[]
+
+    @@index([emailAddress])
+}
+
+model Thing {
+    id String @id @default(cuid())
+
+    name String
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    created DateTime @default(now())
+    updated DateTime @updatedAt
+}
