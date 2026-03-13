@@ -4,9 +4,24 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 const { clear } = useUserSession();
 const route = useRoute();
 
+const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
+
 const logout = async () => {
+  userId.value = null;
   clear();
   await navigateTo("/login");
+};
+
+const copyToClipboard = async () => {
+  if (userId.value) {
+    await navigator.clipboard.writeText(userId.value);
+    useToast().add({
+      title: "Copied to clipboard",
+      color: "success",
+      description: `Your ID: ${userId.value}`,
+      icon: "material-symbols:check-circle-outline",
+    });
+  }
 };
 
 const headerItems = computed<NavigationMenuItem[]>(() => [
@@ -14,11 +29,6 @@ const headerItems = computed<NavigationMenuItem[]>(() => [
     label: "Dashboard",
     to: "/app/dashboard",
     active: route.path.startsWith("/app/dashboard"),
-  },
-  {
-    label: "Changelog",
-    to: "https://github.com/fairdataihub/nuxt-starter/CHANGELOG.md",
-    target: "_blank",
   },
 ]);
 
@@ -41,16 +51,13 @@ const footerItems: NavigationMenuItem[] = [
       <UNavigationMenu :items="headerItems" />
 
       <template #right>
-        <UColorModeButton />
-
-        <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
+        <UTooltip text="Click to copy" mode="hover">
           <UButton
             color="neutral"
             variant="ghost"
-            to="https://github.com/fairdataihub/nuxt-starter"
-            target="_blank"
-            icon="i-simple-icons-github"
-            aria-label="GitHub"
+            icon="i-heroicons-clipboard-document-20-solid"
+            :label="userId ? `User ID: ${userId}` : 'No ID'"
+            @click="copyToClipboard"
           />
         </UTooltip>
 
@@ -59,7 +66,7 @@ const footerItems: NavigationMenuItem[] = [
             v-if="loggedIn"
             color="neutral"
             variant="outline"
-            @click="logout"
+            to="/logout"
           >
             Logout
           </UButton>
@@ -94,32 +101,7 @@ const footerItems: NavigationMenuItem[] = [
       <UNavigationMenu :items="footerItems" variant="link" />
 
       <template #right>
-        <UButton
-          icon="i-simple-icons-discord"
-          color="neutral"
-          variant="ghost"
-          to="https://discord.gg/fairdataihub"
-          target="_blank"
-          aria-label="Discord"
-        />
-
-        <UButton
-          icon="i-simple-icons-x"
-          color="neutral"
-          variant="ghost"
-          to="https://x.com/fairdataihub"
-          target="_blank"
-          aria-label="X"
-        />
-
-        <UButton
-          icon="i-simple-icons-github"
-          color="neutral"
-          variant="ghost"
-          to="https://github.com/fairdataihub"
-          target="_blank"
-          aria-label="GitHub"
-        />
+        <UColorModeButton />
       </template>
     </UFooter>
   </div>

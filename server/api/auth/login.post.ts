@@ -1,72 +1,45 @@
 import { z } from "zod";
-import { compare } from "bcrypt";
 
-const loginSchema = z.object({
-  emailAddress: z.string().email(),
-  password: z.string().min(8),
-});
+const loginSchema = z.object({ id: z.string() });
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event);
+  const cookieId = getCookie(event, "userId");
 
-  if ("user" in session) {
-    return sendRedirect(event, "/app/dashboard");
+  // If a session already exists, refresh the cookie and return
+  if ("user" in session && session.user) {
+    return { id: (session.user as { id: string }).id };
   }
 
   const body = await readValidatedBody(event, (b) => loginSchema.safeParse(b));
 
   if (!body.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Missing login credentials",
-    });
+    // Fall back to userId cookie if no body provided
+
+    if (!cookieId) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: "No user ID found. Please generate one first.",
+      });
+    }
   }
 
-  // Get the user from the database
-  const user = await prisma.user.findUnique({
-    where: {
-      emailAddress: body.data.emailAddress,
-    },
-  });
+  const userId = body.success ? body.data.id : cookieId;
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
     throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid email address or password",
+      statusCode: 404,
+      statusMessage: "User not found for the provided ID.",
     });
   }
-
-  // Check if the user has verified their email
-  if (!user.emailVerified) {
-    throw createError({
-      statusCode: 403,
-      statusMessage:
-        "Email not verified. Please check your email for the verification link.",
-    });
-  }
-
-  // Check if the password matches
-  if (!(await compare(body.data.password, user.password))) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid email address or password",
-    });
-  }
-
-  // Create a new session for the user
-  const userData = {
-    id: user.id,
-    emailAddress: user.emailAddress,
-    emailVerified: user.emailVerified,
-    familyName: user.familyName,
-    givenName: user.givenName,
-  };
 
   await setUserSession(event, {
     loggedInAt: new Date(),
-    user: userData,
+    user: { id: user.id },
     userSessionField: "",
   });
 
-  return sendRedirect(event, "/app/dashboard");
+  return { id: user.id };
 });

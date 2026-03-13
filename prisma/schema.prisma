@@ -17,34 +17,28 @@ datasource db {
 }
 
 model User {
-    id String @id @default(cuid())
-
-    givenName  String @default("") // first name
-    familyName String @default("") // last name
-
-    emailAddress String @unique
-    password     String
-
-    emailVerified                 Boolean   @default(false)
-    emailVerifiedAt               DateTime?
-    emailVerificationToken        String?   @unique
-    emailVerificationTokenExpires DateTime?
+    id String @id @default(cuid(2)) // token for the user (should be anonymous)
 
     created DateTime @default(now())
     updated DateTime @updatedAt
-
-    things Thing[]
-
-    @@index([emailAddress])
 }
 
-model Thing {
-    id String @id @default(cuid())
+model Poster {
+    id String @id @default(cuid(2))
 
-    name String
+    url String // hosted poster url
 
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
+    created DateTime @default(now())
+    updated DateTime @updatedAt
+}
+
+model evaluation {
+    id String @id @default(cuid(2))
+
+    userId   String
+    posterId String
+
+    isPoster Boolean
 
     created DateTime @default(now())
     updated DateTime @updatedAt

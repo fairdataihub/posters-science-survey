@@ -1,16 +1,4 @@
 <script setup lang="ts">
-import { z } from "zod";
-import type { FormSubmitEvent } from "#ui/types";
-
-const { loggedIn } = useUserSession();
-const route = useRoute();
-
-const routeQueryParams = route.query;
-
-if (loggedIn.value) {
-  await navigateTo("/app/dashboard");
-}
-
 definePageMeta({
   layout: "auth",
 });
@@ -19,57 +7,43 @@ useSeoMeta({
   title: "Login",
 });
 
+const route = useRoute();
 const toast = useToast();
 const loading = ref(false);
+const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
 
-const showPassword = ref(false);
+// Prefill from query param, then cookie, then session
+const { session } = useUserSession();
+const token = ref(
+  (route.query.token as string) ||
+  userId.value ||
+  (session.value?.user as { id?: string } | undefined)?.id ||
+  ""
+);
 
-const schema = z.object({
-  emailAddress: z.email(),
-  password: z.string().min(8, "Must be at least 8 characters"),
-});
-
-type Schema = z.output<typeof schema>;
-
-const state = reactive({
-  emailAddress: "rick@example.com",
-  password: "12345678",
-});
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const body = {
-    emailAddress: event.data.emailAddress,
-    password: event.data.password,
-  };
-
+async function login() {
   loading.value = true;
 
   await $fetch("/api/auth/login", {
-    body,
     method: "POST",
+    body: { id: token.value },
   })
-    .then(() => {
+    .then(({ id }) => {
+      userId.value = id;
       toast.add({
-        title: "Login successful",
-        description: "You can now access your account",
+        title: "Logged in",
+        color: "success",
+        description: `Welcome back! Your ID: ${id}`,
         icon: "material-symbols:check-circle-outline",
       });
 
-      if (routeQueryParams.redirect) {
-        console.log("redirecting to", routeQueryParams.redirect);
-
-        window.location.href = routeQueryParams.redirect as string;
-      } else {
-        window.location.href = "/app/dashboard";
-      }
+      window.location.href = "/app/dashboard";
     })
     .catch((error) => {
-      console.error(error);
-
       toast.add({
         title: "Error logging in",
         color: "error",
-        description: error.data.statusMessage,
+        description: error.data?.statusMessage ?? "Unknown error",
         icon: "material-symbols:error",
       });
     })
@@ -80,76 +54,37 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard class="w-full max-w-sm bg-white/75 backdrop-blur dark:bg-white/5">
-    <div class="w-full max-w-sm px-4 py-5 sm:p-6">
+  <UCard class="w-full max-w-lg bg-white/75 backdrop-blur dark:bg-white/5">
+    <div class="w-full px-4 py-5 sm:p-6">
       <div class="flex flex-col items-center justify-center">
-        <Icon name="iconoir:lock" :size="40" />
-
         <h2 class="my-1 text-2xl font-bold">Welcome back</h2>
-
-        <p class="font-medium text-slate-600">
-          Don't have an account?
-          <NuxtLink to="/signup" class="text-primary-500 font-medium">
-            Sign up
-          </NuxtLink>
+        <p class="text-center text-sm text-balance text-gray-500">
+          Enter your saved User ID to restore your session.
         </p>
       </div>
 
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="mt-6 space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormField label="Email Address" name="emailAddress">
-          <UInput v-model="state.emailAddress" type="email" />
-        </UFormField>
-
-        <UFormField label="Password" name="password">
-          <template #hint>
-            <NuxtLink
-              to="/forgot-password"
-              class="font-medium text-sky-500 hover:underline"
-            >
-              Forgot your password?
-            </NuxtLink>
-          </template>
-
-          <UInput
-            v-model="state.password"
-            :type="showPassword ? 'text' : 'password'"
-          >
-            <template #trailing>
-              <Icon
-                name="solar:eye-linear"
-                size="16"
-                class="cursor-pointer text-slate-400 transition-colors hover:text-slate-600"
-                @mousedown="showPassword = true"
-                @mouseup="showPassword = false"
-              />
-            </template>
-          </UInput>
+      <div class="mt-6 space-y-4">
+        <UFormField label="User ID" name="token">
+          <UInput v-model="token" placeholder="Paste your User ID here" />
         </UFormField>
 
         <UButton
-          type="submit"
           class="flex w-full justify-center"
           :loading="loading"
+          :disabled="!token"
+          @click="login"
         >
-          <template #trailing>
-            <Icon name="i-heroicons-arrow-right-20-solid" size="20" />
-          </template>
-          Continue
+          Login
         </UButton>
-      </UForm>
+      </div>
     </div>
 
     <template #footer>
       <p class="text-center text-sm">
-        By signing in, you agree to our
-        <NuxtLink to="/signup" class="text-primary-500 text-sm font-medium">
-          Terms of Service</NuxtLink
-        >.
+        Don't have an ID yet?
+        <NuxtLink to="/signup" class="text-primary-500 font-medium">
+          Generate one
+        </NuxtLink>
       </p>
     </template>
   </UCard>

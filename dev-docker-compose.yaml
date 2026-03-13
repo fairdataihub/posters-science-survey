@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: nuxt_starter_local
+      POSTGRES_DB: posters_science_survey_local
     ports:
       - 5432:5432
     volumes:

@@ -1,14 +1,4 @@
 <script setup lang="ts">
-import { z } from "zod";
-import type { FormSubmitEvent } from "#ui/types";
-
-const config = useRuntimeConfig();
-const { loggedIn } = useUserSession();
-
-if (loggedIn.value) {
-  await navigateTo("/app/dashboard");
-}
-
 definePageMeta({
   layout: "auth",
 });
@@ -17,57 +7,36 @@ useSeoMeta({
   title: "Signup",
 });
 
+const { loggedIn } = useUserSession();
+const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
+
 const toast = useToast();
 const loading = ref(false);
 
-const showPassword = ref(false);
+if (loggedIn.value || userId.value) {
+  toast.add({
+    title: "Session Exists",
+    color: "warning",
+    description:
+      "You have already been assigned a User ID. Please use the existing ID to log in and continue your session.",
+    icon: "material-symbols:warning",
+  });
+  await navigateTo("/login?message=session_exists");
+}
 
-const schema = z.object({
-  emailAddress: z.string().email(),
-  familyName: z.string(),
-  givenName: z.string(),
-  password: z.string().min(8, "Must be at least 8 characters"),
-});
-
-type Schema = z.output<typeof schema>;
-
-const state = reactive({
-  emailAddress: "rick@example.com",
-  familyName: "Sanchez",
-  givenName: "Rick",
-  password: "12345678",
-});
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const body = {
-    emailAddress: event.data.emailAddress,
-    familyName: event.data.familyName,
-    givenName: event.data.givenName,
-    password: event.data.password,
-  };
-
+async function generate() {
   loading.value = true;
 
-  await $fetch("/api/auth/signup", {
-    body,
-    method: "POST",
-  })
-    .then(() => {
-      toast.add({
-        title: "Account created successfully",
-        color: "info",
-        description: config.public.ENABLE_EMAIL_VERIFICATION
-          ? "Please check your email to verify your account before logging in."
-          : "You can now log in to your account.",
-        icon: "material-symbols:mail-outline",
-      });
+  await $fetch("/api/auth/signup", { method: "POST" })
+    .then(({ id }) => {
+      userId.value = id;
+      navigateTo(`/login?token=${id}`);
     })
     .catch((error) => {
-      console.error(error.data);
       toast.add({
-        title: "Error creating account",
+        title: "Error generating ID",
         color: "error",
-        description: error.data.statusMessage,
+        description: error.data?.statusMessage ?? "Unknown error",
         icon: "material-symbols:error",
       });
     })
@@ -78,70 +47,31 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard class="w-full max-w-sm bg-white/75 backdrop-blur dark:bg-white/5">
-    <div class="w-full max-w-sm px-4 py-5 sm:p-6">
+  <UCard class="w-full max-w-lg bg-white/75 backdrop-blur dark:bg-white/5">
+    <div class="w-full px-4 py-5 sm:p-6">
       <div class="flex flex-col items-center justify-center">
-        <h2 class="my-1 text-2xl font-bold">Create an account</h2>
-
-        <p class="font-medium text-slate-600">
-          Already have an account?
-          <NuxtLink to="/login" class="text-primary-500 font-medium">
-            Login
-          </NuxtLink>
+        <h2 class="my-1 text-2xl font-bold">Generate a User ID</h2>
+        <p class="text-center text-sm text-balance text-gray-500">
+          Your ID will be saved on your device. Memorize it to continue tracking
+          your contributions across sessions and devices.
         </p>
       </div>
 
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="mt-6 space-y-4"
-        @submit="onSubmit"
+      <UButton
+        class="mt-6 flex w-full justify-center"
+        :loading="loading"
+        @click="generate"
       >
-        <UFormField label="Given or First Name" name="givenName">
-          <UInput v-model="state.givenName" type="text" />
-        </UFormField>
-
-        <UFormField label="Family or Last Name" name="familyName">
-          <UInput v-model="state.familyName" type="text" />
-        </UFormField>
-
-        <UFormField label="Email Address" name="emailAddress">
-          <UInput v-model="state.emailAddress" type="email" />
-        </UFormField>
-
-        <UFormField label="Password" name="password">
-          <UInput
-            v-model="state.password"
-            :type="showPassword ? 'text' : 'password'"
-          >
-            <template #trailing>
-              <Icon
-                name="solar:eye-linear"
-                size="16"
-                class="cursor-pointer text-slate-400 transition-colors hover:text-slate-600"
-                @mousedown="showPassword = true"
-                @mouseup="showPassword = false"
-              />
-            </template>
-          </UInput>
-        </UFormField>
-
-        <UButton
-          type="submit"
-          class="flex w-full justify-center"
-          :loading="loading"
-        >
-          Create account
-        </UButton>
-      </UForm>
+        Generate User ID
+      </UButton>
     </div>
 
     <template #footer>
       <p class="text-center text-sm">
-        By signing in, you agree to our
-        <NuxtLink to="/signup" class="text-primary-500 text-sm font-medium">
-          Terms of Service</NuxtLink
-        >.
+        Click the button to generate a unique User ID that will be used to
+        identify your submissions. This ID is anonymous and will not be linked
+        to any personal information, ensuring your privacy while allowing us to
+        track your contributions effectively.
       </p>
     </template>
   </UCard>
