@@ -1,16 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-const { clear } = useUserSession();
-const route = useRoute();
-
 const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
-
-const logout = async () => {
-  userId.value = null;
-  clear();
-  await navigateTo("/login");
-};
 
 const copyToClipboard = async () => {
   if (userId.value) {
@@ -23,14 +14,6 @@ const copyToClipboard = async () => {
     });
   }
 };
-
-const headerItems = computed<NavigationMenuItem[]>(() => [
-  {
-    label: "Dashboard",
-    to: "/app/dashboard",
-    active: route.path.startsWith("/app/dashboard"),
-  },
-]);
 
 const footerItems: NavigationMenuItem[] = [
   {
@@ -45,10 +28,8 @@ const footerItems: NavigationMenuItem[] = [
   <div>
     <UHeader>
       <template #title>
-        <NuxtLink to="/" class="flex text-2xl font-bold"> Nuxt App </NuxtLink>
+        <NuxtLink to="/" class="flex text-2xl font-bold"> FAIR Data Poster Survey </NuxtLink>
       </template>
-
-      <UNavigationMenu :items="headerItems" />
 
       <template #right>
         <UTooltip text="Click to copy" mode="hover">

@@ -5,7 +5,6 @@ generator client {
     engineType      = "client"
 }
 
-S
 generator kysely {
     provider = "prisma-kysely"
 
@@ -18,10 +17,12 @@ datasource db {
 }
 
 model User {
-    id String @id @default(cuid(2)) // token for the user (should be anonymous)
+    id          String   @id @default(cuid(2)) // token for the user (should be anonymous)
+    posterOrder String[] // randomized poster IDs assigned on first survey visit
 
-    created DateTime @default(now())
-    updated DateTime @updatedAt
+    created    DateTime     @default(now())
+    updated    DateTime     @updatedAt
+    evaluation evaluation[]
 }
 
 model Poster {
@@ -29,8 +30,9 @@ model Poster {
 
     url String // hosted poster url
 
-    created DateTime @default(now())
-    updated DateTime @updatedAt
+    created    DateTime     @default(now())
+    updated    DateTime     @updatedAt
+    evaluation evaluation[]
 }
 
 model evaluation {
@@ -42,8 +44,11 @@ model evaluation {
     posterId String
     poster   Poster @relation(fields: [posterId], references: [id], onDelete: Cascade)
 
-    isPoster Boolean
+    isPoster   Boolean
+    confidence Int // 1-5 confidence scale
 
     created DateTime @default(now())
     updated DateTime @updatedAt
+
+    @@unique([userId, posterId])
 }
