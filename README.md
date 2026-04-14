@@ -6,10 +6,8 @@
 
 You will need the following installed on your system:
 
-- Node.js
-- Yarn
+- [mise](https://mise.jdx.dev) (manages Node.js and other tools)
 - Docker
-- Volta (optional)
 
 ### Setup
 
@@ -19,25 +17,31 @@ You will need the following installed on your system:
    git clone https://github.com/fairdataihub/nuxt-starter.git
    ```
 
-2. Install the dependencies
+2. Install Node.js and tools via mise
 
    ```bash
-   yarn install
+   mise install
    ```
 
-3. Add your environment variables. An example is provided at `.env.example`
+3. Install the dependencies
+
+   ```bash
+   pnpm install
+   ```
+
+4. Add your environment variables. An example is provided at `.env.example`
 
    ```bash
    cp .env.example .env
    ```
 
-4. Start the development server
+5. Start the development server
 
    ```bash
-   yarn dev
+   pnpm dev
    ```
 
-5. Open the application in your browser
+6. Open the application in your browser
 
    ```bash
    open http://localhost:3000
