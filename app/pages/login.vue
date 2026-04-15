@@ -66,6 +66,15 @@ async function login() {
         </p>
       </div>
 
+      <UAlert
+        v-if="route.query.token"
+        class="mt-6"
+        color="info"
+        icon="i-lucide-save"
+        title="Save your Reviewer ID"
+        description="Make sure to copy and save this ID somewhere safe (e.g. a note or email to yourself). You will need it to return and continue the survey from another device or browser."
+      />
+
       <div class="mt-6 space-y-4">
         <UFormField label="Reviewer ID" name="token">
           <UInput v-model="token" placeholder="Paste your Reviewer ID here" />

@@ -45,10 +45,37 @@ const stepperItems = ref<StepperItem[]>([
   <div>
     <UPageHero
       title="Scientific Poster Classification Survey"
-      description="This site is for human review of images to determine whether they are scientific posters."
       headline="Reviewer Guide"
       :links="links"
-    />
+    >
+      <template #description>
+        <p class="text-lg whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+          Thank you for taking the time to participate in this survey - we truly
+          appreciate your contribution! <br />
+          This survey is being conducted as part of the development of
+          Posters.science, a platform aimed at improving the discoverability and
+          reuse of scientific posters. This work is carried out in collaboration
+          with COMET, which focuses on enhancing metadata practices across
+          research outputs. <br />
+          The purpose of this survey is to conduct human review of images to
+          determine whether they are scientific posters or not. Each decision
+          includes a confidence score to support downstream analysis and model
+          evaluation. <br />
+          Please note that this survey is completely anonymous. We do not
+          collect any personally identifiable information. Each respondent is
+          simply assigned a random unique ID, which allows us to compute
+          aggregate statistics when reporting results in future publications.
+          <br />
+          If you have any questions, feedback, or would like to learn more about
+          this work, please feel free to reach out at
+          <NuxtLink
+            to="mailto:bpatel@calmi2.org"
+            class="text-primary-500 font-medium"
+            >bpatel@calmi2.org</NuxtLink
+          >.
+        </p>
+      </template>
+    </UPageHero>
 
     <UContainer class="my-10">
       <UPageCTA
