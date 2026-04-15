@@ -1,81 +1,48 @@
 <script setup lang="ts">
+import type { StepperItem } from "@nuxt/ui";
+
 useSeoMeta({
-  title: "Home",
+  title: "Poster Review Home",
 });
 
 const links = ref([
   {
-    label: "Get started",
+    label: "Start Reviewing",
+    to: "/signup",
+    icon: "i-lucide-clipboard-check",
+  },
+  {
+    label: "Return to Session",
     to: "/login",
-    icon: "i-lucide-square-play",
-  },
-  {
-    label: "Changelog",
-    to: "https://github.com/fairdataihub/nuxt-starter/blob/main/CHANGELOG.md",
     variant: "subtle" as const,
-    trailingIcon: "i-lucide-arrow-right",
+    trailingIcon: "i-lucide-log-in",
   },
 ]);
 
-const features = ref([
+const stepperItems = ref<StepperItem[]>([
   {
-    title: "Accuracy rate",
-    description: "99.95% in fulfilling orders",
-    icon: "i-lucide-smile",
-  },
-  {
-    title: "Startup businesses",
-    description: "2,000+ partner with us",
-    icon: "i-lucide-a-large-small",
-  },
-  {
-    title: "Happy customers this year",
-    description: "85% happy customer",
-    icon: "i-lucide-sun-moon",
-  },
-]);
-
-const uiFeatures = ref([
-  {
-    title: "Theme",
+    title: "Generate a User ID",
     description:
-      "Learn how to customize Nuxt UI components using Tailwind CSS v4.",
-    icon: "i-lucide-swatch-book",
-    class: "lg:col-span-2",
-    image: {
-      path: "https://ui2.nuxt.com/illustrations/color-palette",
-      width: 363,
-      height: 152,
-    },
-    orientation: "horizontal" as const,
+      "Choose Start Reviewing to create an anonymous ID. Keep this ID to continue later on any device.",
+    icon: "i-lucide-id-card",
   },
   {
-    title: "Fonts",
+    title: "Review each image",
     description:
-      "Nuxt UI integrates with Nuxt Fonts to provide plug-and-play font optimization.",
-    icon: "i-lucide-a-large-small",
-    variant: "soft" as const,
+      "On the survey page, inspect the image and answer whether it is a scientific poster.",
+    icon: "i-lucide-image",
   },
   {
-    title: "Color Mode",
+    title: "Add confidence score",
     description:
-      "Nuxt UI integrates with Nuxt Color Mode to switch between light and dark.",
-    icon: "i-lucide-sun-moon",
-    variant: "soft" as const,
+      "Use the confidence slider to capture certainty for each decision.",
+    icon: "i-lucide-sliders-horizontal",
   },
   {
-    title: "Icons",
+    title: "Submit and continue",
     description:
-      "Nuxt UI integrates with Nuxt Icon to access over 200,000+ icons from Iconify.",
-    icon: "i-lucide-smile",
-    image: {
-      path: "https://ui2.nuxt.com/illustrations/icon-library",
-      width: 362,
-      height: 184,
-    },
-    class: "lg:col-span-2",
-    orientation: "horizontal" as const,
-    reverse: true,
+      "Click Next to save your response. After the final image, you will land on the completion page.",
+    icon: "i-lucide-arrow-right-circle",
   },
 ]);
 </script>
@@ -83,61 +50,27 @@ const uiFeatures = ref([
 <template>
   <div>
     <UPageHero
-      title="FAIR Data Innovations Hub - Nuxt Starter Template"
-      description="A Nuxt starter template for the FAIR Data Innovations Hub. The starting point for all new projects and applications."
-      headline="New release"
+      title="Scientific Poster Classification Survey"
+      description="This site is for human review of images to determine whether they are scientific posters. Each decision includes a confidence score to support downstream analysis and model evaluation."
+      headline="Reviewer Guide"
       :links="links"
-    >
-    </UPageHero>
-
-    <UContainer class="mb-20">
-      <UPageGrid>
-        <UPageCard
-          v-for="(feature, index) in features"
-          :key="index"
-          v-bind="feature"
-        />
-      </UPageGrid>
-    </UContainer>
+    />
 
     <UContainer class="my-10">
-      <UPageCard
-        title="Tailwind CSS"
-        description="Nuxt UI integrates with latest Tailwind CSS v4, bringing significant improvements."
-        icon="i-simple-icons-tailwindcss"
-        orientation="horizontal"
-      >
-        <img
-          src="https://ui.nuxt.com/_ipx/_/tailwindcss-v4.svg"
-          alt="Tailwind CSS"
-          class="w-full"
-        />
-      </UPageCard>
-    </UContainer>
-
-    <UContainer class="my-10">
-      <UPageCard
-        title="Prisma ORM"
-        description="This template integrates Prisma ORM v7 for seamless database management and querying in Nuxt applications."
-        icon="i-simple-icons-prisma"
+      <UPageCTA
+        title="Before You Begin"
+        description="You can start fresh with a new User ID or resume with an existing one. The survey asks the same core question for each image: Is this a scientific poster?"
       />
     </UContainer>
 
     <UContainer class="my-10">
-      <UPageGrid>
-        <UPageCard v-for="(ui, index) in uiFeatures" :key="index" v-bind="ui">
-          <UColorModeImage
-            v-if="ui.image"
-            :light="`${ui.image.path}-light.svg`"
-            :dark="`${ui.image.path}-dark.svg`"
-            :width="ui.image.width"
-            :height="ui.image.height"
-            :alt="ui.title"
-            loading="lazy"
-            class="w-full"
-          />
-        </UPageCard>
-      </UPageGrid>
+      <UPageCard
+        title="Review Workflow"
+        description="Follow these steps to complete your review session."
+        icon="i-lucide-list-checks"
+      >
+        <UStepper orientation="vertical" :items="stepperItems" class="w-full" />
+      </UPageCard>
     </UContainer>
   </div>
 </template>
