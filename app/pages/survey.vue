@@ -5,7 +5,7 @@ definePageMeta({
 
 useSeoMeta({ title: "Survey" });
 
-const POSTER_LIMIT = 24;
+const POSTER_LIMIT = 30;
 
 const route = useRoute();
 const toast = useToast();
