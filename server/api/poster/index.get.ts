@@ -20,21 +20,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Fetch posters in the user's order
+  // Get poster IDs already evaluated by this user
+  const evaluated = await prisma.evaluation.findMany({
+    where: { userId: user.id },
+    select: { posterId: true },
+  });
+  const evaluatedIds = new Set(evaluated.map((e) => e.posterId));
+
+  // Fetch posters in the user's order, excluding already-scored ones
+  const remainingIds = dbUser.posterOrder.filter((id) => !evaluatedIds.has(id));
+
   const posterMap = await prisma.poster
     .findMany({
-      where: { id: { in: dbUser.posterOrder } },
+      where: { id: { in: remainingIds } },
     })
     .then((rows) => new Map(rows.map((p) => [p.id, p])));
 
-  const posters = dbUser.posterOrder
+  const posters = remainingIds
     .map((id) => posterMap.get(id))
     .filter(Boolean);
 
-  // Count how many posters this user has already evaluated
-  const evaluationCount = await prisma.evaluation.count({
-    where: { userId: user.id },
-  });
-
-  return { posters, evaluationCount };
+  return { posters, evaluationCount: evaluatedIds.size };
 });
