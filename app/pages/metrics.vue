@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: ["auth"],
-});
-
 useSeoMeta({ title: "Metrics" });
 
 const { data, error, refresh } = await useFetch("/api/metrics");
