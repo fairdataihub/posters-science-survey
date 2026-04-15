@@ -8,7 +8,10 @@ useSeoMeta({
 });
 
 const { loggedIn } = useUserSession();
-const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
+const userId = useCookie("userId", {
+  refresh: true,
+  maxAge: 60 * 60 * 24 * 30,
+});
 
 const toast = useToast();
 const loading = ref(false);
@@ -18,7 +21,7 @@ if (loggedIn.value || userId.value) {
     title: "Session Exists",
     color: "warning",
     description:
-      "You have already been assigned a User ID. Please use the existing ID to log in and continue your session.",
+      "You have already been assigned a Reviewer ID. Please use the existing ID to log in and continue your session.",
     icon: "material-symbols:warning",
   });
   await navigateTo("/login?message=session_exists");
@@ -50,10 +53,10 @@ async function generate() {
   <UCard class="w-full max-w-lg bg-white/75 backdrop-blur dark:bg-white/5">
     <div class="w-full px-4 py-5 sm:p-6">
       <div class="flex flex-col items-center justify-center">
-        <h2 class="my-1 text-2xl font-bold">Generate a User ID</h2>
+        <h2 class="my-1 text-2xl font-bold">Generate a Reviewer ID</h2>
         <p class="text-center text-sm text-balance text-gray-500">
-          Your ID will be saved on your device. Memorize it to continue tracking
-          your contributions across sessions and devices.
+          Your Reviewer ID will be saved on your device. Memorize it to continue
+          tracking your contributions across sessions and devices.
         </p>
       </div>
 
@@ -62,13 +65,13 @@ async function generate() {
         :loading="loading"
         @click="generate"
       >
-        Generate User ID
+        Generate Reviewer ID
       </UButton>
     </div>
 
     <template #footer>
       <p class="text-center text-sm">
-        Click the button to generate a unique User ID that will be used to
+        Click the button to generate a unique Reviewer ID that will be used to
         identify your submissions. This ID is anonymous and will not be linked
         to any personal information, ensuring your privacy while allowing us to
         track your contributions effectively.

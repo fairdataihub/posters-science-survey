@@ -45,7 +45,7 @@ async function logout() {
         <h2 class="my-1 text-2xl font-bold">Log out</h2>
         <p class="text-center text-sm text-gray-500">
           This will clear your session. <br />
-          Your User ID cookie will remain so you can log back in.
+          Your Reviewer ID cookie will remain so you can log back in.
         </p>
       </div>
 
@@ -61,8 +61,8 @@ async function logout() {
 
     <template #footer>
       <p class="text-center text-sm">
-        If you want to completely remove your User ID, please clear your browser
-        cookies for this site.
+        If you want to completely remove your Reviewer ID, please clear your
+        browser cookies for this site.
       </p>
     </template>
   </UCard>

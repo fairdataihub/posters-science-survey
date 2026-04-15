@@ -10,15 +10,18 @@ useSeoMeta({
 const route = useRoute();
 const toast = useToast();
 const loading = ref(false);
-const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
+const userId = useCookie("userId", {
+  refresh: true,
+  maxAge: 60 * 60 * 24 * 30,
+});
 
 // Prefill from query param, then cookie, then session
 const { session } = useUserSession();
 const token = ref(
   (route.query.token as string) ||
-  userId.value ||
-  (session.value?.user as { id?: string } | undefined)?.id ||
-  ""
+    userId.value ||
+    (session.value?.user as { id?: string } | undefined)?.id ||
+    "",
 );
 
 async function login() {
@@ -33,7 +36,7 @@ async function login() {
       toast.add({
         title: "Logged in",
         color: "success",
-        description: `Welcome back! Your ID: ${id}`,
+        description: `Welcome back! Your Reviewer ID: ${id}`,
         icon: "material-symbols:check-circle-outline",
       });
 
@@ -59,13 +62,13 @@ async function login() {
       <div class="flex flex-col items-center justify-center">
         <h2 class="my-1 text-2xl font-bold">Welcome back</h2>
         <p class="text-center text-sm text-balance text-gray-500">
-          Enter your saved User ID to restore your session.
+          Enter your saved Reviewer ID to restore your session.
         </p>
       </div>
 
       <div class="mt-6 space-y-4">
-        <UFormField label="User ID" name="token">
-          <UInput v-model="token" placeholder="Paste your User ID here" />
+        <UFormField label="Reviewer ID" name="token">
+          <UInput v-model="token" placeholder="Paste your Reviewer ID here" />
         </UFormField>
 
         <UButton

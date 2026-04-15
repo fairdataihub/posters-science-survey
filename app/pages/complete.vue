@@ -16,19 +16,26 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="mx-auto flex w-full max-w-lg flex-col items-center gap-8 px-4 py-20 text-center">
+  <div
+    class="mx-auto flex w-full max-w-lg flex-col items-center gap-8 px-4 py-20 text-center"
+  >
     <div class="flex flex-col items-center gap-3">
-      <UIcon name="material-symbols:check-circle" class="text-success size-16" />
+      <UIcon
+        name="material-symbols:check-circle"
+        class="text-success size-16"
+      />
       <h1 class="text-3xl font-bold">Thank you!</h1>
-      <p class="text-muted text-lg">You've reviewed all the posters. Your responses have been saved.</p>
+      <p class="text-muted text-lg">
+        You've reviewed all the posters. Your responses have been saved.
+      </p>
     </div>
 
     <div class="bg-elevated w-full rounded-xl border p-4">
-      <p class="text-muted text-sm">Your user ID</p>
+      <p class="text-muted text-sm">Your Reviewer ID</p>
       <p class="font-mono text-sm break-all">{{ userId }}</p>
     </div>
 
-    <div class="flex flex-col gap-3 w-full">
+    <div class="flex w-full flex-col gap-3">
       <UButton to="/survey?index=0" variant="outline" block>
         Review again from the start
       </UButton>

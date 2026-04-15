@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-const userId = useCookie("userId", { refresh: true, maxAge: 60 * 60 * 24 * 30 });
+const userId = useCookie("userId", {
+  refresh: true,
+  maxAge: 60 * 60 * 24 * 30,
+});
 
 const copyToClipboard = async () => {
   if (userId.value) {
@@ -9,7 +12,7 @@ const copyToClipboard = async () => {
     useToast().add({
       title: "Copied to clipboard",
       color: "success",
-      description: `Your ID: ${userId.value}`,
+      description: `Your Reviewer ID: ${userId.value}`,
       icon: "material-symbols:check-circle-outline",
     });
   }
@@ -28,7 +31,9 @@ const footerItems: NavigationMenuItem[] = [
   <div>
     <UHeader>
       <template #title>
-        <NuxtLink to="/" class="flex text-2xl font-bold"> FAIR Data Poster Survey </NuxtLink>
+        <NuxtLink to="/" class="flex text-2xl font-bold">
+          FDIH Poster Survey
+        </NuxtLink>
       </template>
 
       <template #right>
@@ -37,7 +42,7 @@ const footerItems: NavigationMenuItem[] = [
             color="neutral"
             variant="ghost"
             icon="i-heroicons-clipboard-document-20-solid"
-            :label="userId ? `User ID: ${userId}` : 'No ID'"
+            :label="userId ? `Reviewer ID: ${userId}` : 'No Reviewer ID'"
             @click="copyToClipboard"
           />
         </UTooltip>

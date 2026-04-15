@@ -21,7 +21,7 @@ const links = ref([
 
 const stepperItems = ref<StepperItem[]>([
   {
-    title: "Generate a User ID",
+    title: "Generate a Reviewer ID",
     description:
       "Choose Start Reviewing to create an anonymous ID. Keep this ID to continue later on any device.",
     icon: "i-lucide-id-card",
@@ -59,7 +59,7 @@ const stepperItems = ref<StepperItem[]>([
     <UContainer class="my-10">
       <UPageCTA
         title="Before You Begin"
-        description="You can start fresh with a new User ID or resume with an existing one. The survey asks the same core question for each image: Is this a scientific poster?"
+        description="You can start fresh with a new Reviewer ID or resume with an existing one. The survey asks the same core question for each image: Is this a scientific poster?"
       />
     </UContainer>
 
