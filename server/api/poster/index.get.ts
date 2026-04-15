@@ -1,3 +1,5 @@
+const EVALUATION_THRESHOLD = 3;
+
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event);
   const { user } = session;
@@ -9,13 +11,25 @@ export default defineEventHandler(async (event) => {
   });
   const evaluatedIds = evaluated.map((e) => e.posterId);
 
-  // Fetch all posters not yet evaluated by this user
+  // Fetch all posters not yet evaluated by this user, with their global evaluation count
   const unevaluated = await prisma.poster.findMany({
     where: evaluatedIds.length > 0 ? { id: { notIn: evaluatedIds } } : {},
+    include: { _count: { select: { evaluation: true } } },
   });
 
-  // Shuffle for variety each session
-  const posters = unevaluated.sort(() => Math.random() - 0.5);
+  // Priority: posters under the threshold first (fewest evaluations first),
+  // then the rest in random order
+  const underThreshold = unevaluated
+    .filter((p) => p._count.evaluation < EVALUATION_THRESHOLD)
+    .sort((a, b) => a._count.evaluation - b._count.evaluation);
+
+  const aboveThreshold = unevaluated
+    .filter((p) => p._count.evaluation >= EVALUATION_THRESHOLD)
+    .sort(() => Math.random() - 0.5);
+
+  const posters = [...underThreshold, ...aboveThreshold].map(
+    ({ _count, ...p }) => p,
+  );
 
   return { posters, evaluationCount: evaluatedIds.length };
 });
