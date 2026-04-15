@@ -32,3 +32,5 @@ postgres-data/*
 redis-data/*
 database.sqlite
 
+poster_sentry_review_sample_350_jpeg/non_poster/*.jpg
+poster_sentry_review_sample_350_jpeg/poster/*.jpg

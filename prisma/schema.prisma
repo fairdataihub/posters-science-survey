@@ -20,22 +20,26 @@ model User {
     id          String   @id @default(cuid(2)) // token for the user (should be anonymous)
     posterOrder String[] // randomized poster IDs assigned on first survey visit
 
-    created    DateTime     @default(now())
-    updated    DateTime     @updatedAt
-    evaluation evaluation[]
+    created DateTime @default(now())
+    updated DateTime @updatedAt
+
+    evaluation Evaluation[]
 }
 
 model Poster {
     id String @id @default(cuid(2))
 
-    url String // hosted poster url
+    url              String // hosted poster url (CDN)
+    originalFilename String // original filename of the poster
+    isPoster         Boolean // true = real poster, false = non-poster
 
-    created    DateTime     @default(now())
-    updated    DateTime     @updatedAt
-    evaluation evaluation[]
+    created DateTime @default(now())
+    updated DateTime @updatedAt
+
+    evaluation Evaluation[]
 }
 
-model evaluation {
+model Evaluation {
     id String @id @default(cuid(2))
 
     userId String
