@@ -44,10 +44,18 @@ async function logout() {
       <div class="flex flex-col items-center justify-center">
         <h2 class="my-1 text-2xl font-bold">Log out</h2>
         <p class="text-center text-sm text-gray-500">
-          This will clear your session. <br />
-          Your Reviewer ID cookie will remain so you can log back in.
+          This will clear your session.
         </p>
       </div>
+
+      <UAlert
+        class="mt-6"
+        color="warning"
+        icon="i-lucide-save"
+        variant="subtle"
+        title="Save your Reviewer ID"
+        description="Before logging out, save your Reviewer ID somewhere safe so you can continue later (especially on another device or browser)."
+      />
 
       <UButton
         class="mt-6 flex w-full justify-center"
@@ -61,8 +69,8 @@ async function logout() {
 
     <template #footer>
       <p class="text-center text-sm">
-        If you want to completely remove your Reviewer ID, please clear your
-        browser cookies for this site.
+        Your Reviewer ID cookie remains on this browser. If you want to
+        completely remove your Reviewer ID, clear this site's cookies.
       </p>
     </template>
   </UCard>
