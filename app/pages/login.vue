@@ -24,6 +24,28 @@ const token = ref(
     "",
 );
 
+async function copyReviewerId(id: string) {
+  await navigator.clipboard
+    .writeText(id)
+    .then(() => {
+      toast.add({
+        title: "Reviewer ID copied",
+        color: "success",
+        description: "Your Reviewer ID has been copied to the clipboard.",
+        icon: "material-symbols:content-copy-outline",
+      });
+    })
+    .catch(() => {
+      toast.add({
+        title: "Copy failed",
+        color: "error",
+        description:
+          "Unable to copy your Reviewer ID. Please copy it manually.",
+        icon: "material-symbols:error",
+      });
+    });
+}
+
 async function login() {
   loading.value = true;
 
@@ -77,7 +99,21 @@ async function login() {
 
       <div class="mt-6 space-y-4">
         <UFormField label="Reviewer ID" name="token">
-          <UInput v-model="token" placeholder="Paste your Reviewer ID here" />
+          <div class="flex items-center gap-2">
+            <UInput
+              v-model="token"
+              class="flex-1"
+              placeholder="Paste your Reviewer ID here"
+            />
+            <UButton
+              color="neutral"
+              variant="soft"
+              icon="i-lucide-copy"
+              aria-label="Copy Reviewer ID"
+              :disabled="!token"
+              @click="copyReviewerId(token)"
+            />
+          </div>
         </UFormField>
 
         <UButton

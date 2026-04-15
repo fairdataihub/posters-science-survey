@@ -5,6 +5,8 @@ definePageMeta({
 
 useSeoMeta({ title: "Survey" });
 
+const POSTER_LIMIT = 24;
+
 const route = useRoute();
 const toast = useToast();
 
@@ -19,6 +21,14 @@ if (error.value) {
 }
 
 const posters = computed(() => data.value?.posters ?? []);
+
+if (
+  !error.value &&
+  posters.value.length === 0 &&
+  (data.value?.evaluationCount ?? 0) > 0
+) {
+  await navigateTo("/complete");
+}
 const total = computed(() => posters.value.length);
 
 const index = computed(() => {
@@ -28,8 +38,16 @@ const index = computed(() => {
 
 const poster = computed(() => posters.value[index.value]);
 const completed = ref(data.value?.evaluationCount ?? 0);
+const endless = computed(() => route.query.endless === "true");
 const progress = computed(() =>
-  total.value > 0 ? Math.round((completed.value / total.value) * 100) : 0,
+  Math.min(
+    100,
+    Math.round(
+      (completed.value /
+        (completed.value >= POSTER_LIMIT ? 350 : POSTER_LIMIT)) *
+        100,
+    ),
+  ),
 );
 
 const submitting = ref(false);
@@ -63,11 +81,21 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
   }
   submitting.value = false;
 
+  if (!endless.value && completed.value >= POSTER_LIMIT) {
+    await navigateTo("/complete?limitReached=true");
+    return;
+  }
+
   const nextIndex = index.value + 1;
   if (nextIndex >= total.value) {
     await navigateTo("/complete");
   } else {
-    await navigateTo({ query: { index: nextIndex } });
+    await navigateTo({
+      query: {
+        index: nextIndex,
+        ...(endless.value ? { endless: "true" } : {}),
+      },
+    });
   }
 };
 </script>
@@ -77,7 +105,10 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     <!-- Progress -->
     <div class="flex items-center gap-4">
       <span class="text-muted shrink-0 text-sm">
-        {{ completed }} of {{ total }} evaluated
+        <template v-if="completed >= POSTER_LIMIT">
+          {{ completed }} / 350
+        </template>
+        <template v-else> {{ completed }} / {{ POSTER_LIMIT }} </template>
       </span>
       <UProgress v-model="progress" />
       <span class="text-muted shrink-0 text-sm">{{ progress }}%</span>

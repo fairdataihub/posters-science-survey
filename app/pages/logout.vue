@@ -9,6 +9,32 @@ useSeoMeta({
 
 const toast = useToast();
 const loading = ref(false);
+const userId = useCookie("userId", {
+  refresh: true,
+  maxAge: 60 * 60 * 24 * 30,
+});
+
+async function copyReviewerId(id: string) {
+  await navigator.clipboard
+    .writeText(id)
+    .then(() => {
+      toast.add({
+        title: "Reviewer ID copied",
+        color: "success",
+        description: "Your Reviewer ID has been copied to the clipboard.",
+        icon: "material-symbols:content-copy-outline",
+      });
+    })
+    .catch(() => {
+      toast.add({
+        title: "Copy failed",
+        color: "error",
+        description:
+          "Unable to copy your Reviewer ID. Please copy it manually.",
+        icon: "material-symbols:error",
+      });
+    });
+}
 
 async function logout() {
   loading.value = true;
@@ -54,8 +80,30 @@ async function logout() {
         icon="i-lucide-save"
         variant="subtle"
         title="Save your Reviewer ID"
-        description="Before logging out, save your Reviewer ID somewhere safe so you can continue later (especially on another device or browser)."
-      />
+      >
+        <template #description>
+          <p>
+            Before logging out, save your Reviewer ID somewhere safe so you can
+            continue later (especially on another device or browser).
+          </p>
+          <div
+            v-if="userId"
+            class="mt-3 flex items-center justify-between gap-2 rounded-md bg-white/60 p-2 dark:bg-black/20"
+          >
+            <span class="font-mono text-xs break-all sm:text-sm">{{
+              userId
+            }}</span>
+            <UButton
+              size="xs"
+              color="neutral"
+              variant="soft"
+              icon="i-lucide-copy"
+              aria-label="Copy Reviewer ID"
+              @click="copyReviewerId(userId)"
+            />
+          </div>
+        </template>
+      </UAlert>
 
       <UButton
         class="mt-6 flex w-full justify-center"

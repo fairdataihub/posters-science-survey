@@ -8,14 +8,8 @@ useSeoMeta({
 const links = ref([
   {
     label: "Start Reviewing",
-    to: "/signup",
-    icon: "i-lucide-clipboard-check",
-  },
-  {
-    label: "Return to Session",
     to: "/login",
-    variant: "subtle" as const,
-    trailingIcon: "i-lucide-log-in",
+    icon: "i-lucide-clipboard-check",
   },
 ]);
 

@@ -5,8 +5,11 @@ definePageMeta({
 
 useSeoMeta({ title: "Survey Complete" });
 
+const route = useRoute();
 const userId = useCookie("userId");
 const { clear } = useUserSession();
+
+const limitReached = computed(() => route.query.limitReached === "true");
 
 const logout = async () => {
   userId.value = null;
@@ -25,8 +28,14 @@ const logout = async () => {
         class="text-success size-16"
       />
       <h1 class="text-3xl font-bold">Thank you!</h1>
-      <p class="text-muted text-lg">
-        You've reviewed all the posters. Your responses have been saved.
+      <p v-if="limitReached" class="text-muted text-lg">
+        You've reached the required amount of evaluations for your session. Your
+        responses have been saved. If you have more time and would like to
+        review additional items, please click the button below to continue.
+      </p>
+      <p v-else class="text-muted text-lg">
+        You've reviewed all the available posters. Your responses have been
+        saved. Thank you for your contribution!
       </p>
     </div>
 
@@ -36,9 +45,10 @@ const logout = async () => {
     </div>
 
     <div class="flex w-full flex-col gap-3">
-      <UButton to="/survey?index=0" variant="outline" block>
-        Review again from the start
+      <UButton v-if="limitReached" to="/survey?endless=true" variant="solid" block>
+        Keep scoring
       </UButton>
+
       <UButton color="neutral" variant="ghost" block @click="logout">
         Logout
       </UButton>
