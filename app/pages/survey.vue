@@ -19,7 +19,6 @@ if (error.value) {
 }
 
 const posters = computed(() => data.value?.posters ?? []);
-const evaluations = computed(() => data.value?.evaluations ?? {});
 const total = computed(() => posters.value.length);
 
 const index = computed(() => {
@@ -28,34 +27,18 @@ const index = computed(() => {
 });
 
 const poster = computed(() => posters.value[index.value]);
+const completed = ref(data.value?.evaluationCount ?? 0);
 const progress = computed(() =>
-  total.value > 0 ? Math.round(((index.value + 1) / total.value) * 100) : 0,
+  total.value > 0 ? Math.round((completed.value / total.value) * 100) : 0,
 );
 
-// Per-poster answer state (pre-filled from existing evaluations)
 const selectedAnswer = ref<boolean | null>(null);
 const confidence = ref(3);
 const submitting = ref(false);
 
-watch(
-  [poster, evaluations],
-  () => {
-    if (!poster.value) return;
-    const existing = evaluations.value[poster.value.id];
-    if (existing) {
-      selectedAnswer.value = existing.isPoster;
-      confidence.value = existing.confidence;
-    } else {
-      selectedAnswer.value = null;
-      confidence.value = 3;
-    }
-  },
-  { immediate: true },
-);
-
 const canSubmit = computed(() => selectedAnswer.value !== null);
 
-const submitAndNavigate = async (nextIndex: number) => {
+const goNext = async () => {
   if (!poster.value || selectedAnswer.value === null) return;
   submitting.value = true;
   try {
@@ -67,13 +50,9 @@ const submitAndNavigate = async (nextIndex: number) => {
         confidence: confidence.value,
       },
     });
-    // Update local evaluations cache so back-navigation shows correct values
-    if (data.value) {
-      data.value.evaluations[poster.value.id] = {
-        isPoster: selectedAnswer.value,
-        confidence: confidence.value,
-      } as never;
-    }
+    completed.value += 1;
+    selectedAnswer.value = null;
+    confidence.value = 3;
   } catch {
     toast.add({
       title: "Failed to save answer",
@@ -85,16 +64,12 @@ const submitAndNavigate = async (nextIndex: number) => {
   }
   submitting.value = false;
 
+  const nextIndex = index.value + 1;
   if (nextIndex >= total.value) {
     await navigateTo("/complete");
   } else {
     await navigateTo({ query: { index: nextIndex } });
   }
-};
-
-const goNext = () => submitAndNavigate(index.value + 1);
-const goPrev = async () => {
-  await navigateTo({ query: { index: index.value - 1 } });
 };
 </script>
 
@@ -103,9 +78,9 @@ const goPrev = async () => {
     <!-- Progress -->
     <div class="flex items-center gap-4">
       <span class="text-muted shrink-0 text-sm">
-        Poster {{ index + 1 }} of {{ total }}
+        {{ completed }} of {{ total }} evaluated
       </span>
-      <UProgress :value="progress" class="flex-1" />
+      <UProgress v-model="progress" />
       <span class="text-muted shrink-0 text-sm">{{ progress }}%</span>
     </div>
 
@@ -177,17 +152,8 @@ const goPrev = async () => {
       </Transition>
     </div>
 
-    <!-- Navigation -->
-    <div class="flex items-center justify-between pt-2">
-      <UButton
-        variant="ghost"
-        icon="material-symbols:arrow-back"
-        :disabled="index === 0"
-        @click="goPrev"
-      >
-        Previous
-      </UButton>
-
+    <!-- Next button -->
+    <div class="flex justify-end pt-2">
       <UButton
         :loading="submitting"
         :disabled="!canSubmit"

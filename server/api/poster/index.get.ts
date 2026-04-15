@@ -31,11 +31,10 @@ export default defineEventHandler(async (event) => {
     .map((id) => posterMap.get(id))
     .filter(Boolean);
 
-  // Fetch existing evaluations keyed by posterId
-  const evalRows = await prisma.evaluation.findMany({
+  // Count how many posters this user has already evaluated
+  const evaluationCount = await prisma.evaluation.count({
     where: { userId: user.id },
   });
-  const evaluations = Object.fromEntries(evalRows.map((e) => [e.posterId, e]));
 
-  return { posters, evaluations };
+  return { posters, evaluationCount };
 });
