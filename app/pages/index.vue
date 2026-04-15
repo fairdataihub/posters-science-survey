@@ -33,15 +33,9 @@ const stepperItems = ref<StepperItem[]>([
     icon: "i-lucide-image",
   },
   {
-    title: "Add confidence score",
-    description:
-      "Use the confidence slider to capture certainty for each decision.",
-    icon: "i-lucide-sliders-horizontal",
-  },
-  {
     title: "Submit and continue",
     description:
-      "Click Next to save your response. After the final image, you will land on the completion page.",
+      "Clicking Yes, No, or Unsure saves your response and moves to the next image automatically. After the final image, you will land on the completion page.",
     icon: "i-lucide-arrow-right-circle",
   },
 ]);
@@ -51,7 +45,7 @@ const stepperItems = ref<StepperItem[]>([
   <div>
     <UPageHero
       title="Scientific Poster Classification Survey"
-      description="This site is for human review of images to determine whether they are scientific posters. Each decision includes a confidence score to support downstream analysis and model evaluation."
+      description="This site is for human review of images to determine whether they are scientific posters."
       headline="Reviewer Guide"
       :links="links"
     />

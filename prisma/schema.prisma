@@ -48,8 +48,7 @@ model Evaluation {
     posterId String
     poster   Poster @relation(fields: [posterId], references: [id], onDelete: Cascade)
 
-    isPoster   Boolean
-    confidence Int // 1-5 confidence scale
+    userChoice String // "poster" | "non-poster" | "unsure" 
 
     created DateTime @default(now())
     updated DateTime @updatedAt

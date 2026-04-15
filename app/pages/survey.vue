@@ -32,27 +32,26 @@ const progress = computed(() =>
   total.value > 0 ? Math.round((completed.value / total.value) * 100) : 0,
 );
 
-const selectedAnswer = ref<boolean | null>(null);
-const confidence = ref(3);
 const submitting = ref(false);
 
-const canSubmit = computed(() => selectedAnswer.value !== null);
-
-const goNext = async () => {
-  if (!poster.value || selectedAnswer.value === null) return;
+const choose = async (choice: "poster" | "non-poster" | "unsure") => {
+  if (!poster.value || submitting.value) return;
   submitting.value = true;
   try {
     await $fetch("/api/evaluation", {
       method: "POST",
       body: {
         posterId: poster.value.id,
-        isPoster: selectedAnswer.value,
-        confidence: confidence.value,
+        userChoice: choice,
       },
     });
     completed.value += 1;
-    selectedAnswer.value = null;
-    confidence.value = 3;
+
+    toast.add({
+      title: "Answer saved",
+      color: "success",
+      icon: "material-symbols:check-circle",
+    });
   } catch {
     toast.add({
       title: "Failed to save answer",
@@ -109,70 +108,38 @@ const goNext = async () => {
       <div class="flex gap-3">
         <UButton
           size="xl"
-          :variant="selectedAnswer === true ? 'solid' : 'outline'"
+          :loading="submitting"
+          variant="outline"
           color="success"
           icon="material-symbols:check-circle"
           class="flex-1 justify-center"
-          @click="selectedAnswer = true"
+          @click="choose('poster')"
         >
           Yes
         </UButton>
         <UButton
           size="xl"
-          :variant="selectedAnswer === false ? 'solid' : 'outline'"
+          :loading="submitting"
+          variant="outline"
           color="error"
           icon="material-symbols:cancel"
           class="flex-1 justify-center"
-          @click="selectedAnswer = false"
+          @click="choose('non-poster')"
         >
           No
         </UButton>
+        <UButton
+          size="xl"
+          :loading="submitting"
+          variant="outline"
+          color="neutral"
+          icon="material-symbols:help"
+          class="flex-1 justify-center"
+          @click="choose('unsure')"
+        >
+          Unsure
+        </UButton>
       </div>
-
-      <!-- Confidence slider -->
-      <Transition name="fade">
-        <div v-if="selectedAnswer !== null" class="flex flex-col gap-2 pt-2">
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-medium">Confidence</span>
-            <span class="text-muted text-sm">{{ confidence }} / 5</span>
-          </div>
-          <input
-            v-model.number="confidence"
-            type="range"
-            min="1"
-            max="5"
-            step="1"
-            class="accent-primary h-2 w-full cursor-pointer rounded-full"
-          />
-          <div class="text-muted flex justify-between text-xs">
-            <span>Not confident</span>
-            <span>Very confident</span>
-          </div>
-        </div>
-      </Transition>
-    </div>
-
-    <!-- Next button -->
-    <div class="flex justify-end pt-2">
-      <UButton
-        :loading="submitting"
-        :disabled="!canSubmit"
-        trailing-icon="material-symbols:arrow-forward"
-        @click="goNext"
-      >
-        {{ index === total - 1 ? "Finish" : "Next" }}
-      </UButton>
     </div>
   </div>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

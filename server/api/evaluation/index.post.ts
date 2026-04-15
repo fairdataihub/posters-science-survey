@@ -2,8 +2,7 @@ import { z } from "zod";
 
 const bodySchema = z.object({
   posterId: z.string(),
-  isPoster: z.boolean(),
-  confidence: z.number().int().min(1).max(5),
+  userChoice: z.enum(["poster", "non-poster", "unsure"]),
 });
 
 export default defineEventHandler(async (event) => {
@@ -22,14 +21,19 @@ export default defineEventHandler(async (event) => {
     create: {
       userId: user.id,
       posterId: body.posterId,
-      isPoster: body.isPoster,
-      confidence: body.confidence,
+      userChoice: body.userChoice,
     },
     update: {
-      isPoster: body.isPoster,
-      confidence: body.confidence,
+      userChoice: body.userChoice,
     },
   });
+
+  if (!evaluation) {
+    throw createError({
+      statusCode: 500,
+      message: "Failed to save evaluation",
+    });
+  }
 
   return evaluation;
 });
