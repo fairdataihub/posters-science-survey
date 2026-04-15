@@ -58,9 +58,8 @@ const stepperItems = ref<StepperItem[]>([
           with COMET, which focuses on enhancing metadata practices across
           research outputs. <br />
           The purpose of this survey is to conduct human review of images to
-          determine whether they are scientific posters or not. Each decision
-          includes a confidence score to support downstream analysis and model
-          evaluation. <br />
+          determine whether they are scientific posters or not. Each decision is
+          used to support downstream analysis and model evaluation. <br />
           Please note that this survey is completely anonymous. We do not
           collect any personally identifiable information. Each respondent is
           simply assigned a random unique ID, which allows us to compute
