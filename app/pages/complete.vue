@@ -34,8 +34,7 @@ const logout = async () => {
         review additional items, please click the button below to continue.
       </p>
       <p v-else class="text-muted text-lg">
-        You've reviewed all the available posters. Your responses have been
-        saved. Thank you for your contribution!
+        You've reviewed all the available images!
       </p>
     </div>
 
@@ -45,7 +44,12 @@ const logout = async () => {
     </div>
 
     <div class="flex w-full flex-col gap-3">
-      <UButton v-if="limitReached" to="/survey?endless=true" variant="solid" block>
+      <UButton
+        v-if="limitReached"
+        to="/survey?endless=true"
+        variant="solid"
+        block
+      >
         Keep scoring
       </UButton>
 

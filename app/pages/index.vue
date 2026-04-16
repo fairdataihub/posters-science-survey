@@ -42,23 +42,43 @@ const stepperItems = ref<StepperItem[]>([
       headline="Reviewer Guide"
       :links="links"
     >
-      <template #description>
-        <p class="text-lg whitespace-pre-wrap text-gray-700 dark:text-gray-300">
-          Thank you for taking the time to participate in this survey - we truly
-          appreciate your contribution! <br />
+      <div
+        class="space-y-4 text-left text-base leading-relaxed text-gray-700 sm:text-lg dark:text-gray-300"
+      >
+        <p>
+          Thank you for taking the time to participate in this survey. We truly
+          appreciate your contribution.
+        </p>
+        <div>
           This survey is being conducted as part of the development of
           Posters.science, a platform aimed at improving the discoverability and
           reuse of scientific posters. This work is carried out in collaboration
           with COMET, which focuses on enhancing metadata practices across
-          research outputs. <br />
+          research outputs.
+        </div>
+        <p>
           The purpose of this survey is to conduct human review of images to
-          determine whether they are scientific posters or not. Each decision is
-          used to support downstream analysis and model evaluation. <br />
+          determine whether they are scientific posters or not. The results will
+          support the development of an AI model that performs this
+          classification automatically and will be used to identify true posters
+          from mislabeled records (proceedings, abstracts, slides, etc.) before
+          they are registered in Posters.science.
+        </p>
+        <p>
+          Although you can complete the survey at any time, we would appreciate
+          it if you could complete at least 70 evaluations (or more, if you can;
+          there are 350 evaluations total). You will be provided a Reviewer ID
+          when you first start, and you can use it to come back to the survey at
+          any time, including from a different device, and continue where you
+          left off.
+        </p>
+        <p>
           Please note that this survey is completely anonymous. We do not
           collect any personally identifiable information. Each respondent is
-          simply assigned a random unique ID, which allows us to compute
-          aggregate statistics when reporting results in future publications.
-          <br />
+          assigned a random unique ID, which allows us to compute aggregate
+          statistics when reporting results in future publications.
+        </p>
+        <p>
           If you have any questions, feedback, or would like to learn more about
           this work, please feel free to reach out at
           <NuxtLink
@@ -67,7 +87,7 @@ const stepperItems = ref<StepperItem[]>([
             >bpatel@calmi2.org</NuxtLink
           >.
         </p>
-      </template>
+      </div>
     </UPageHero>
 
     <UContainer class="my-10">
