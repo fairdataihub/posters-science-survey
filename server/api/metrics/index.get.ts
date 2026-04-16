@@ -1,5 +1,5 @@
 const TOTAL_POSTERS = 350;
-const COMPLETION_THRESHOLD = 70;
+const COMPLETION_THRESHOLD = 50;
 
 export default defineEventHandler(async (event) => {
   // --- Poster coverage ---
