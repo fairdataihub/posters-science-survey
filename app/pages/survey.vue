@@ -10,7 +10,7 @@ const POSTER_LIMIT = 70;
 const route = useRoute();
 const toast = useToast();
 
-const { data, error } = await useFetch("/api/poster");
+const { data, error, refresh } = await useFetch("/api/poster");
 
 if (error.value) {
   toast.add({
@@ -29,14 +29,8 @@ if (
 ) {
   await navigateTo("/complete");
 }
-const total = computed(() => posters.value.length);
 
-const index = computed(() => {
-  const i = Number(route.query.index ?? 0);
-  return isNaN(i) ? 0 : Math.max(0, Math.min(i, total.value - 1));
-});
-
-const poster = computed(() => posters.value[index.value]);
+const poster = computed(() => posters.value[0]);
 const completed = ref(data.value?.evaluationCount ?? 0);
 const endless = computed(() => route.query.endless === "true");
 const progress = computed(() =>
@@ -69,6 +63,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
       title: "Answer saved",
       color: "success",
       icon: "material-symbols:check-circle",
+      duration: 500,
     });
   } catch {
     toast.add({
@@ -86,16 +81,10 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     return;
   }
 
-  const nextIndex = index.value + 1;
-  if (nextIndex >= total.value) {
+  await refresh();
+
+  if (posters.value.length === 0) {
     await navigateTo("/complete");
-  } else {
-    await navigateTo({
-      query: {
-        index: nextIndex,
-        ...(endless.value ? { endless: "true" } : {}),
-      },
-    });
   }
 };
 </script>
