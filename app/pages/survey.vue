@@ -20,17 +20,15 @@ if (error.value) {
   });
 }
 
-const posters = computed(() => data.value?.posters ?? []);
-
 if (
   !error.value &&
-  posters.value.length === 0 &&
+  data.value?.poster == null &&
   (data.value?.evaluationCount ?? 0) > 0
 ) {
   await navigateTo("/complete");
 }
 
-const poster = computed(() => posters.value[0]);
+const poster = computed(() => data.value?.poster);
 const completed = ref(data.value?.evaluationCount ?? 0);
 const endless = computed(() => route.query.endless === "true");
 const progress = computed(() =>
@@ -83,7 +81,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
 
   await refresh();
 
-  if (posters.value.length === 0) {
+  if (poster.value == null) {
     await navigateTo("/complete");
   }
 };

@@ -17,19 +17,18 @@ export default defineEventHandler(async (event) => {
     include: { _count: { select: { evaluation: true } } },
   });
 
-  // Priority: posters under the threshold first (fewest evaluations first),
-  // then the rest in random order
+  if (unevaluated.length === 0) {
+    return { poster: null, evaluationCount: evaluatedIds.length };
+  }
+
+  // Priority: pick from under-threshold first (fewest evaluations), then random
   const underThreshold = unevaluated
     .filter((p) => p._count.evaluation < EVALUATION_THRESHOLD)
     .sort((a, b) => a._count.evaluation - b._count.evaluation);
 
-  const aboveThreshold = unevaluated
-    .filter((p) => p._count.evaluation >= EVALUATION_THRESHOLD)
-    .sort(() => Math.random() - 0.5);
+  const pool = underThreshold.length > 0 ? underThreshold : unevaluated;
+  const selected = pool[Math.floor(Math.random() * pool.length)]!;
+  const { _count, ...poster } = selected;
 
-  const posters = [...underThreshold, ...aboveThreshold].map(
-    ({ _count, ...p }) => p,
-  );
-
-  return { posters, evaluationCount: evaluatedIds.length };
+  return { poster, evaluationCount: evaluatedIds.length };
 });
