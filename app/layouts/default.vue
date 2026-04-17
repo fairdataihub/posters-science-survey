@@ -18,6 +18,19 @@ const copyToClipboard = async () => {
   }
 };
 
+const items = computed<NavigationMenuItem[]>(() => [
+  {
+    label: "Reviewer ID: " + (userId.value ?? "None"),
+    icon: "i-heroicons-clipboard-document-20-solid",
+    click: () => copyToClipboard(),
+  },
+  {
+    label: "Logout",
+    icon: "mdi:login",
+    to: "/logout",
+  },
+]);
+
 const footerItems: NavigationMenuItem[] = [
   {
     label: "Made by FAIR Data Innovations Hub",
@@ -44,6 +57,7 @@ const footerItems: NavigationMenuItem[] = [
             icon="i-heroicons-clipboard-document-20-solid"
             :label="userId ? `Reviewer ID: ${userId}` : 'No Reviewer ID'"
             @click="copyToClipboard"
+            class="invisible md:visible"
           />
         </UTooltip>
 
@@ -53,6 +67,7 @@ const footerItems: NavigationMenuItem[] = [
             color="neutral"
             variant="outline"
             to="/logout"
+            class="hidden sm:block"
           >
             Logout
           </UButton>
@@ -70,6 +85,14 @@ const footerItems: NavigationMenuItem[] = [
             </UButton>
           </div>
         </AuthState>
+      </template>
+
+      <template #body>
+        <UNavigationMenu
+          :items="items"
+          orientation="vertical"
+          class="-mx-2.5"
+        />
       </template>
     </UHeader>
 
