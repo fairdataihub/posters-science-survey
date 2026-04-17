@@ -18,6 +18,20 @@ const copyToClipboard = async () => {
   }
 };
 
+const items = computed<NavigationMenuItem[]>(() => [
+  {
+    label: "Reviewer ID: " + (userId.value ?? "None"),
+    icon: "i-heroicons-clipboard-document-20-solid",
+    click: () => copyToClipboard(),
+  },
+  {
+    label: "Logout",
+    icon: "mdi:login",
+    to: "/logout",
+    show: !!userId.value,
+  },
+]);
+
 const footerItems: NavigationMenuItem[] = [
   {
     label: "Made by FAIR Data Innovations Hub",
@@ -44,6 +58,7 @@ const footerItems: NavigationMenuItem[] = [
             icon="i-heroicons-clipboard-document-20-solid"
             :label="userId ? `Reviewer ID: ${userId}` : 'No Reviewer ID'"
             @click="copyToClipboard"
+            class="invisible text-[1px] md:visible md:text-base"
           />
         </UTooltip>
 
@@ -53,23 +68,28 @@ const footerItems: NavigationMenuItem[] = [
             color="neutral"
             variant="outline"
             to="/logout"
+            class="hidden sm:block"
           >
             Logout
           </UButton>
 
           <div v-else class="flex items-center justify-center gap-3">
-            <UButton to="/login" color="neutral" variant="outline">
-              Sign in
-            </UButton>
-
-            <UButton to="/signup" color="neutral">
+            <UButton to="/login" color="neutral" class="w-max">
               <template #trailing>
                 <Icon name="i-heroicons-arrow-right-20-solid" size="20" />
               </template>
-              Sign up
+              Start Reviewing
             </UButton>
           </div>
         </AuthState>
+      </template>
+
+      <template #body>
+        <UNavigationMenu
+          :items="items"
+          orientation="vertical"
+          class="-mx-2.5"
+        />
       </template>
     </UHeader>
 
