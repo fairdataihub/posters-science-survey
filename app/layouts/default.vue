@@ -32,7 +32,7 @@ const footerItems: NavigationMenuItem[] = [
     <UHeader>
       <template #title>
         <NuxtLink to="/" class="flex text-2xl font-bold">
-          FDIH Poster Survey
+          Poster Survey
         </NuxtLink>
       </template>
 
