@@ -28,6 +28,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     label: "Logout",
     icon: "mdi:login",
     to: "/logout",
+    show: !!userId.value,
   },
 ]);
 
@@ -57,7 +58,7 @@ const footerItems: NavigationMenuItem[] = [
             icon="i-heroicons-clipboard-document-20-solid"
             :label="userId ? `Reviewer ID: ${userId}` : 'No Reviewer ID'"
             @click="copyToClipboard"
-            class="invisible md:visible"
+            class="invisible text-[1px] md:visible md:text-base"
           />
         </UTooltip>
 
@@ -73,15 +74,11 @@ const footerItems: NavigationMenuItem[] = [
           </UButton>
 
           <div v-else class="flex items-center justify-center gap-3">
-            <UButton to="/login" color="neutral" variant="outline">
-              Sign in
-            </UButton>
-
-            <UButton to="/signup" color="neutral">
+            <UButton to="/login" color="neutral" class="w-max">
               <template #trailing>
                 <Icon name="i-heroicons-arrow-right-20-solid" size="20" />
               </template>
-              Sign up
+              Start Reviewing
             </UButton>
           </div>
         </AuthState>
