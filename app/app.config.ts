@@ -10,7 +10,7 @@ export default defineAppConfig({
     },
     colors: {
       neutral: "zinc",
-      primary: "sky",
+      primary: "pink",
     },
     input: {
       slots: {
