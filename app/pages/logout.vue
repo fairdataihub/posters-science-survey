@@ -9,6 +9,7 @@ useSeoMeta({
 
 const toast = useToast();
 const loading = ref(false);
+const confirmed = ref(false);
 const userId = useCookie("userId", {
   refresh: true,
   maxAge: 60 * 60 * 24 * 30,
@@ -41,6 +42,7 @@ async function logout() {
 
   await $fetch("/api/auth/logout", { method: "POST" })
     .then(() => {
+      userId.value = null;
       toast.add({
         title: "Logged out",
         color: "success",
@@ -105,10 +107,17 @@ async function logout() {
         </template>
       </UAlert>
 
+      <UCheckbox
+        v-model="confirmed"
+        class="mt-6"
+        label="I have saved my Reviewer ID and I am ready to log out"
+      />
+
       <UButton
         class="mt-6 flex w-full justify-center"
         color="error"
         :loading="loading"
+        :disabled="!confirmed"
         @click="logout"
       >
         Log out
@@ -117,8 +126,7 @@ async function logout() {
 
     <template #footer>
       <p class="text-center text-sm">
-        Your Reviewer ID cookie remains on this browser. If you want to
-        completely remove your Reviewer ID, clear this site's cookies.
+        Logging out will also remove your Reviewer ID cookie from this browser.
       </p>
     </template>
   </UCard>
