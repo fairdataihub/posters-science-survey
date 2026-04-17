@@ -10,6 +10,7 @@ useSeoMeta({
 const route = useRoute();
 const toast = useToast();
 const loading = ref(false);
+const validatingCookie = ref(false);
 const userId = useCookie("userId", {
   refresh: true,
   maxAge: 60 * 60 * 24 * 30,
@@ -23,6 +24,24 @@ const token = ref(
     (session.value?.user as { id?: string } | undefined)?.id ||
     "",
 );
+
+if (import.meta.client && userId.value) {
+  validatingCookie.value = true;
+  try {
+    const { id } = await $fetch<{ id: string }>("/api/auth/login", {
+      method: "POST",
+      body: { id: userId.value },
+    });
+
+    userId.value = id;
+    await navigateTo("/survey", { replace: true });
+  } catch {
+    // Clear stale cookie so user can log in manually.
+    userId.value = null;
+  } finally {
+    validatingCookie.value = false;
+  }
+}
 
 async function copyReviewerId(id: string) {
   await navigator.clipboard
@@ -118,8 +137,8 @@ async function login() {
 
         <UButton
           class="flex w-full justify-center"
-          :loading="loading"
-          :disabled="!token"
+          :loading="loading || validatingCookie"
+          :disabled="!token || validatingCookie"
           @click="login"
         >
           Login
