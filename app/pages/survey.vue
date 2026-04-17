@@ -121,7 +121,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
 
     <!-- Question -->
     <div class="flex flex-col gap-4">
-      <p class="text-lg font-semibold">Is this a scientific poster?</p>
+      <p class="text-lg font-semibold">Is this a conference poster?</p>
 
       <div class="flex gap-3">
         <UButton

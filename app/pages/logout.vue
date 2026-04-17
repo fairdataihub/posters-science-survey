@@ -50,7 +50,7 @@ async function logout() {
         icon: "material-symbols:check-circle-outline",
       });
 
-      navigateTo("/login");
+      window.location.href = "/login";
     })
     .catch((error) => {
       toast.add({

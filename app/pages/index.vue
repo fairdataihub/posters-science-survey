@@ -23,7 +23,7 @@ const stepperItems = ref<StepperItem[]>([
   {
     title: "Review each image",
     description:
-      "On the survey page, inspect the image and answer whether it is a scientific poster.",
+      "On the survey page, inspect the image and answer whether it is a conference poster.",
     icon: "i-lucide-image",
   },
   {
@@ -38,7 +38,7 @@ const stepperItems = ref<StepperItem[]>([
 <template>
   <div>
     <UPageHero
-      title="Scientific Poster Classification Survey"
+      title="Conference Poster Classification Survey"
       headline="Reviewer Guide"
       :links="links"
     >
@@ -52,13 +52,13 @@ const stepperItems = ref<StepperItem[]>([
         <div>
           This survey is being conducted as part of the development of
           Posters.science, a platform aimed at improving the discoverability and
-          reuse of scientific posters. This work is carried out in collaboration
+          reuse of conference posters. This work is carried out in collaboration
           with COMET, which focuses on enhancing metadata practices across
           research outputs.
         </div>
         <p>
           The purpose of this survey is to conduct human review of images to
-          determine whether they are scientific posters or not. The results will
+          determine whether they are conference posters or not. The results will
           support the development of an AI model that performs this
           classification automatically and will be used to identify true posters
           from mislabeled records (proceedings, abstracts, slides, etc.) before
@@ -93,7 +93,7 @@ const stepperItems = ref<StepperItem[]>([
     <UContainer class="my-10">
       <UPageCTA
         title="Before You Begin"
-        description="You can start fresh with a new Reviewer ID or resume with an existing one. The survey asks the same core question for each image: Is this a scientific poster?"
+        description="You can start fresh with a new Reviewer ID or resume with an existing one. The survey asks the same core question for each image: Is this a conference poster?"
       />
     </UContainer>
 
