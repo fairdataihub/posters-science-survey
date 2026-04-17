@@ -66,11 +66,11 @@ const stepperItems = ref<StepperItem[]>([
         </p>
         <p>
           Although you can complete the survey at any time, we would appreciate
-          it if you could complete at least 70 evaluations (or more, if you can;
-          there are 350 evaluations total). You will be provided a Reviewer ID
-          when you first start, and you can use it to come back to the survey at
-          any time, including from a different device, and continue where you
-          left off.
+          it if you could complete at least 100 evaluations (or more, if you
+          can; there are 3570 evaluations total). You will be provided a
+          Reviewer ID when you first start, and you can use it to come back to
+          the survey at any time, including from a different device, and
+          continue where you left off.
         </p>
         <p>
           Please note that this survey is completely anonymous. We do not

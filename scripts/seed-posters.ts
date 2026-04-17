@@ -10,7 +10,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
  *   pnpm seed:poster
  *
  * Optional:
- *   --dir    path to sample folder (default: ./poster_sentry_review_sample_350)
+ *   --dir    path to sample folder (default: ./poster_sentry_training_pdfs_jpeg)
  *   --limit  max number of files to process (default: all)
  *
  * Required env vars:
@@ -78,7 +78,7 @@ async function main() {
 
   const baseDir =
     getArg("dir") ??
-    path.join(process.cwd(), "poster_sentry_review_sample_350_jpeg");
+    path.join(process.cwd(), "poster_sentry_training_pdfs_jpeg");
   const limitArg = getArg("limit");
   const limit = limitArg ? Number(limitArg) : Infinity;
 

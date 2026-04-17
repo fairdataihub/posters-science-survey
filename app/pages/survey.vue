@@ -5,7 +5,7 @@ definePageMeta({
 
 useSeoMeta({ title: "Survey" });
 
-const POSTER_LIMIT = 70;
+const POSTER_LIMIT = 100;
 
 const route = useRoute();
 const toast = useToast();
@@ -36,7 +36,7 @@ const progress = computed(() =>
     100,
     Math.round(
       (completed.value /
-        (completed.value >= POSTER_LIMIT ? 350 : POSTER_LIMIT)) *
+        (completed.value >= POSTER_LIMIT ? 3570 : POSTER_LIMIT)) *
         100,
     ),
   ),
@@ -93,7 +93,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     <div class="flex items-center gap-4">
       <span class="text-muted shrink-0 text-sm">
         <template v-if="completed >= POSTER_LIMIT">
-          {{ completed }} / 350
+          {{ completed }} / 3570
         </template>
         <template v-else> {{ completed }} / {{ POSTER_LIMIT }} </template>
       </span>
