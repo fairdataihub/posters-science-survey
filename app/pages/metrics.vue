@@ -27,9 +27,9 @@ const pct = (n: number, total: number) =>
       <!-- Poster Coverage -->
       <section class="flex flex-col gap-6">
         <div>
-          <h2 class="text-lg font-semibold">Poster Coverage</h2>
+          <h2 class="text-lg font-semibold">Survey Coverage</h2>
           <p class="text-muted text-sm">
-            Out of {{ data.totalPosters }} total posters
+            Out of {{ data.totalPosters }} total images
           </p>
         </div>
 
@@ -127,7 +127,7 @@ const pct = (n: number, total: number) =>
 
           <div class="flex flex-col gap-2">
             <div class="flex justify-between text-sm">
-              <span>Completed all {{ data.totalPosters }} posters</span>
+              <span>Completed all {{ data.totalPosters }} images</span>
               <span class="text-muted">
                 {{ data.users.completed }} /
                 {{ data.users.total }}
