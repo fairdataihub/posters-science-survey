@@ -43,6 +43,7 @@ const progress = computed(() =>
 );
 
 const submitting = ref(false);
+const loadingNext = ref(false);
 
 const choose = async (choice: "poster" | "non-poster" | "unsure") => {
   if (!poster.value || submitting.value) return;
@@ -79,7 +80,9 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     return;
   }
 
+  loadingNext.value = true;
   await refresh();
+  loadingNext.value = false;
 
   if (poster.value == null) {
     await navigateTo("/complete");
@@ -102,8 +105,9 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     </div>
 
     <!-- Poster image -->
+    <USkeleton v-if="loadingNext" class="h-[75vh] w-full rounded-xl" />
     <div
-      v-if="poster"
+      v-else-if="poster"
       class="bg-elevated flex items-center justify-center overflow-hidden rounded-xl border"
     >
       <img
