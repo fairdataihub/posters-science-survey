@@ -45,6 +45,17 @@ const progress = computed(() =>
 const submitting = ref(false);
 const loadingNext = ref(false);
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+  if (e.key === "z") choose("poster");
+  else if (e.key === "x") choose("non-poster");
+  else if (e.key === "c") choose("unsure");
+};
+
+onMounted(() => window.addEventListener("keydown", handleKeydown));
+onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
+
 const choose = async (choice: "poster" | "non-poster" | "unsure") => {
   if (!poster.value || submitting.value) return;
   submitting.value = true;
@@ -137,7 +148,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
           class="flex-1 justify-center"
           @click="choose('poster')"
         >
-          Yes
+          Yes (z)
         </UButton>
         <UButton
           size="xl"
@@ -148,7 +159,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
           class="flex-1 justify-center"
           @click="choose('non-poster')"
         >
-          No
+          No (x)
         </UButton>
         <UButton
           size="xl"
@@ -159,7 +170,7 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
           class="flex-1 justify-center"
           @click="choose('unsure')"
         >
-          Unsure
+          Unsure (c)
         </UButton>
       </div>
     </div>
