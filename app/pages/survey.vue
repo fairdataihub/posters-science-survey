@@ -59,6 +59,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
 const choose = async (choice: "poster" | "non-poster" | "unsure") => {
   if (!poster.value || submitting.value) return;
   submitting.value = true;
+
   try {
     await $fetch("/api/evaluation", {
       method: "POST",
@@ -66,14 +67,6 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
         posterId: poster.value.id,
         userChoice: choice,
       },
-    });
-    completed.value += 1;
-
-    toast.add({
-      title: "Answer saved",
-      color: "success",
-      icon: "material-symbols:check-circle",
-      duration: 500,
     });
   } catch {
     toast.add({
@@ -84,16 +77,27 @@ const choose = async (choice: "poster" | "non-poster" | "unsure") => {
     submitting.value = false;
     return;
   }
-  submitting.value = false;
+
+  toast.add({
+    title: "Answer saved",
+    color: "success",
+    icon: "material-symbols:check-circle",
+    duration: 500,
+  });
+
+  loadingNext.value = true;
+  await refresh();
+  loadingNext.value = false;
+
+  // Sync to server's distinct count so double-fires don't inflate the display
+  completed.value = data.value?.evaluationCount ?? completed.value;
 
   if (!endless.value && completed.value >= POSTER_LIMIT) {
     await navigateTo("/complete?limitReached=true");
     return;
   }
 
-  loadingNext.value = true;
-  await refresh();
-  loadingNext.value = false;
+  submitting.value = false;
 
   if (poster.value == null) {
     await navigateTo("/complete");
