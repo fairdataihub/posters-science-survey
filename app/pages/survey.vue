@@ -34,7 +34,7 @@ const endless = computed(() => route.query.endless === "true");
 const progress = computed(() =>
   Math.min(
     100,
-    Math.round(
+    Math.floor(
       (completed.value /
         (completed.value >= POSTER_LIMIT ? 3570 : POSTER_LIMIT)) *
         100,
